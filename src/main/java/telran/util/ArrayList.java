@@ -36,7 +36,6 @@ public class ArrayList<T> implements List<T> {
         boolean removedExist = index >= 0;
         if (removedExist) {
             remove(index);
-            size--;
         }
         return removedExist;
     }
