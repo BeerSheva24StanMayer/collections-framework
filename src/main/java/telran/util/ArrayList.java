@@ -100,6 +100,7 @@ public class ArrayList<T> implements List<T> {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T remove(int index) {
         T out = null;
@@ -116,6 +117,7 @@ public class ArrayList<T> implements List<T> {
         return out;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T get(int index) {
         return (T) array[index];

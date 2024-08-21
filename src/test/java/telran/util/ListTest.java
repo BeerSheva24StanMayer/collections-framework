@@ -1,14 +1,45 @@
 package telran.util;
 
-public abstract class ListTest extends CollectionTest{
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Iterator;
+
+import org.junit.jupiter.api.Test;
+
+public abstract class ListTest extends CollectionTest {
     List<Integer> list;
+
+    @SuppressWarnings("unchecked")
     @Override
     void setUp() {
         super.setUp();
         list = (List<Integer>) collection;
     }
-    //TODOs
-    //specific test for list
-    //where list is the reference to collection being filled in the 
-    //method setup of CollectionList
+
+    @Test
+    void addListTest() {
+        list.add(4, 4);
+        assertEquals(array.length + 1, list.size());
+    }
+
+    @Test
+    void removeListTest() {
+
+        assertEquals(9, list.remove(5));
+    }
+
+    @Test
+    void getListTest() {
+        assertEquals(9, list.get(5));
+    }
+
+    @Test
+    void indexOfListTest() {
+        assertEquals(5, list.indexOf((Integer)9));
+    }
+
+    @Test
+    void lastIndexOfTest() {
+        assertEquals(6, list.lastIndexOf((Integer)100));
+    }
 }
