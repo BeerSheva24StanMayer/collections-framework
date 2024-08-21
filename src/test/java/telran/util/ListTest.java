@@ -2,14 +2,12 @@ package telran.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 
 public abstract class ListTest extends CollectionTest {
     List<Integer> list;
 
-    @SuppressWarnings("unchecked")
     @Override
     void setUp() {
         super.setUp();

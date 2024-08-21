@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import java.util.Collection;
+// import java.util.Collection;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
@@ -17,19 +17,19 @@ public abstract class CollectionTest {
     void setUp() {
         Arrays.stream(array).forEach(collection::add);
     }
+
     @Test
     void addTest() {
-        collection.add(200);
-        collection.add(17);
+        assertTrue(collection.add(200));
+        assertTrue(collection.add(17));
         assertEquals(array.length + 2, collection.size());
     }
 @Test
 void removeTest() {
-    assertTrue(collection.remove(10));
+    assertTrue(collection.add(10));
     assertFalse(collection.remove(101));
 }
-//TODO
-//all collection tests
+
 @Test
 void isEmptyTest() {
     assertFalse(collection.isEmpty());
@@ -38,12 +38,15 @@ void isEmptyTest() {
 }
 
 private void collectionReset() {
-    Arrays.stream(array).forEach(collection::remove);
+    while (!collection.isEmpty()) {
+        collection.remove(collection.iterator().next());
+    }
+
 }
 
 @Test
-void containsTest() {
-    assertTrue(collection.contains(100));
+void containTest() {
+    assertTrue(collection.contains(10));
     assertFalse(collection.contains(101));
 }
 

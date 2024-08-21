@@ -38,10 +38,7 @@ public class ArrayList<T> implements List<T> {
             remove(index);
             size--;
         }
-        if (size == array.length / 2) {
-            reduce();
-        }
-        return true;
+        return removedExist;
     }
 
     private void reduce() {
@@ -77,6 +74,7 @@ public class ArrayList<T> implements List<T> {
             return current < size;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public T next(){
             if (!hasNext()) {
@@ -111,7 +109,7 @@ public class ArrayList<T> implements List<T> {
             System.arraycopy(array, index + 1, array, index, size - index);
             size--;
         }
-        if (size == array.length / 2) {
+        if (size < array.length / 2) {
             reduce();
         }
         return out;
@@ -142,3 +140,4 @@ public class ArrayList<T> implements List<T> {
     }
 
 }
+
