@@ -22,8 +22,9 @@ public abstract class ListTest extends CollectionTest {
 
     @Test
     void removeListTest() {
-
-        assertEquals(9, list.remove(5));
+        assertEquals(17, list.remove(7));
+        assertEquals(3, list.remove(0));
+        assertEquals(1, list.remove(2));
     }
 
     @Test
@@ -33,7 +34,7 @@ public abstract class ListTest extends CollectionTest {
 
     @Test
     void indexOfListTest() {
-        assertEquals(5, list.indexOf((Integer)9));
+        assertEquals(3, list.indexOf(1));
     }
 
     @Test
