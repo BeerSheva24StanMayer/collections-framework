@@ -1,10 +1,8 @@
 package telran.util;
 
-
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.NoSuchElementException;
-
 
 public class LinkedList<T> implements List<T> {
     private static class Node<T> {
@@ -18,10 +16,11 @@ public class LinkedList<T> implements List<T> {
     }
 
     private class LinkedListIterator implements Iterator<T> {
-        int current = 0;
+        Node<T> current = head;
+
         @Override
         public boolean hasNext() {
-            return current < size;
+            return current != null;
         }
 
         @Override
@@ -29,7 +28,9 @@ public class LinkedList<T> implements List<T> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-           return getNode(current++).obj;
+            Node<T> currentOut = current;
+            current = current.next;
+            return currentOut.obj;
         }
 
     }
@@ -113,10 +114,9 @@ public class LinkedList<T> implements List<T> {
     public boolean remove(T pattern) {
         boolean flag = true;
         int index = indexOf(pattern);
-        if(index < 0) {
+        if (index < 0) {
             flag = false;
-        }
-        else {
+        } else {
             remove(index);
         }
         return flag;
@@ -153,13 +153,11 @@ public class LinkedList<T> implements List<T> {
     public T remove(int index) {
         checkIndex(index, true);
         Node<T> node = getNode(index);
-        if(index == 0) {
+        if (index == 0) {
             removeHead();
-        }
-        else if(index == size - 1) {
+        } else if (index == size - 1) {
             removeTail();
-        }
-        else {
+        } else {
             removeMiddle(node);
         }
         size--;
@@ -168,17 +166,15 @@ public class LinkedList<T> implements List<T> {
     }
 
     private void removeHead() {
-            if(head == tail) {
-                head = tail = null;
-            }
-            else {
-                head = head.next;
-            }
+        if (head == tail) {
+            head = tail = null;
+        } else {
+            head = head.next;
+        }
     }
 
     private void removeMiddle(Node<T> node) {
-    
-        Node<T> nodePrev = node.prev; 
+        Node<T> nodePrev = node.prev;
         Node<T> nodeNext = node.next;
         nodePrev.next = nodeNext;
         nodeNext.prev = nodePrev;
@@ -202,10 +198,9 @@ public class LinkedList<T> implements List<T> {
             current = current.next;
             index++;
         }
-        return index  == size ? -1 : index;
+        return index == size ? -1 : index;
     }
 
- 
     @Override
     public int lastIndexOf(T pattern) {
         int index = size - 1;
