@@ -170,6 +170,7 @@ public class LinkedList<T> implements List<T> {
             head = tail = null;
         } else {
             head = head.next;
+            head.prev = null;
         }
     }
 
@@ -182,6 +183,7 @@ public class LinkedList<T> implements List<T> {
 
     private void removeTail() {
         tail = tail.prev;
+        tail.next = null;
     }
 
     @Override
