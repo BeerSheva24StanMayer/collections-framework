@@ -6,46 +6,48 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import org.openqa.selenium.interactions.SourceType;
+
 @SuppressWarnings("unchecked")
 public class ArrayList<T> implements List<T> {
     private static final int DEFAULT_CAPACITY = 16;
-    private Object [] array;
+    private Object[] array;
     private int size = 0;
-    
+
     public ArrayList(int capacity) {
         array = new Object[capacity];
     }
+
     public ArrayList() {
         this(DEFAULT_CAPACITY);
     }
+
     @Override
     public boolean add(T obj) {
         reallocationIfNeeded();
         array[size++] = obj;
         return true;
     }
+
     private void reallocationIfNeeded() {
-        if(size == array.length) {
+        if (size == array.length) {
             reallocate();
         }
     }
 
     private void reallocate() {
-          array = Arrays.copyOf(array, array.length * 2);
+        array = Arrays.copyOf(array, array.length * 2);
     }
-   
 
     @Override
     public int size() {
-       return size;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
-
-   
 
     @Override
     public Iterator<T> iterator() {
@@ -61,11 +63,10 @@ public class ArrayList<T> implements List<T> {
         size++;
     }
 
-   
     @Override
     public T remove(int index) {
         checkIndex(index, false);
-        T res = (T)array[index];
+        T res = (T) array[index];
         size--;
         System.arraycopy(array, index + 1, array, index, size - index);
         array[size] = null;
@@ -81,7 +82,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public int indexOf(T pattern) {
         int index = 0;
-        while(index < size && !Objects.equals(array[index], pattern)) {
+        while (index < size && !Objects.equals(array[index], pattern)) {
             index++;
         }
         return index == size ? -1 : index;
@@ -90,46 +91,42 @@ public class ArrayList<T> implements List<T> {
     @Override
     public int lastIndexOf(T pattern) {
         int index = size - 1;
-        while(index >= 0 && !Objects.equals(array[index], pattern)) {
+        while (index >= 0 && !Objects.equals(array[index], pattern)) {
             index--;
         }
         return index;
     }
+
     @Override
-    public boolean removeIf(Predicate<T> predicate)  {
+    public boolean removeIf(Predicate<T> predicate) {
         boolean anyDeleted = false;
-        int indToIns = - 1;
-        int counter = 0; 
+        int counter = 0;
         for (int i = 0; i < size; i++) {
             T element = (T) array[i];
-            if(predicate.test(element)) {
-                if(indToIns < 0) indToIns = i;
-                element = null;
+            if (!predicate.test(element)) {
+                array[counter] = element;
                 counter++;
-                anyDeleted = true;
-            }
-            else if (!predicate.test(element) && indToIns >= 0) {
-                    array[indToIns] = element;
-                    element = null;
-                    indToIns++;
             }
         }
-        size = size - counter;
+        Arrays.fill(array, counter, size, null);
+        anyDeleted = size > counter;
+        size = counter;
         return anyDeleted;
     }
 
     private class ArrayListIterator implements Iterator<T> {
         int currentIndex = 0;
         private boolean flNext = false;
+
         @Override
         public boolean hasNext() {
-            flNext = true; 
-           return currentIndex < size;
+            flNext = true;
+            return currentIndex < size;
         }
 
         @Override
         public T next() {
-            if(!hasNext()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
             return (T) array[currentIndex++];
@@ -137,14 +134,13 @@ public class ArrayList<T> implements List<T> {
 
         @Override
         public void remove() {
-            if(!flNext) {
+            if (!flNext) {
                 throw new IllegalStateException();
             }
             ArrayList.this.remove(--currentIndex);
             flNext = false;
         }
 
-        
     }
 
 }

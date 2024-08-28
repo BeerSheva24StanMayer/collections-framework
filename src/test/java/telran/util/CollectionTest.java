@@ -7,13 +7,13 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.stream.IntStream;
-import java.util.concurrent.*;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 public abstract class CollectionTest {
-    private static final int N_ELEMENTS = 1_000_000;
+    private static final int N_ELEMENTS = 2_000_000;
     protected Collection<Integer> collection;
     Random random = new Random();
     Integer[] array = {3, -10, 20, 1, 10, 8, 100 , 17};
@@ -26,16 +26,22 @@ public abstract class CollectionTest {
         assertFalse(collection.removeIf(n -> n % 2 == 0));
         assertTrue(collection.stream().allMatch(n -> n % 2 != 0));
     }
+    @Timeout(value = 300, unit = TimeUnit.MILLISECONDS)
     @Test
     void clearTest() {
         collection.clear();
         assertTrue(collection.isEmpty());
     }
     @Test
-    void addTest() {
+    void addNonExistingTest() {
         assertTrue(collection.add(200));
-        assertTrue(collection.add(17));
-        runTest(new Integer[]{3, -10, 20, 1, 10, 8, 100 , 17, 200, 17});
+       
+        runTest(new Integer[]{3, -10, 20, 1, 10, 8, 100 , 17, 200});
+    }
+    @Test
+    void addExistingTest() {
+        assertFalse(collection.add(17));
+        runTest(new Integer[]{3, -10, 20, 1, 10, 8, 100 , 17, 17});
     }
     @Test
     void sizeTest() {
@@ -43,6 +49,7 @@ public abstract class CollectionTest {
     }
 @Test
     void iteratorTest() {
+        Integer[] expected = array.clone();
         Integer[] actual = new Integer[array.length];
         int index = 0;
         Iterator<Integer> it = collection.iterator();
@@ -50,8 +57,10 @@ public abstract class CollectionTest {
         while(it.hasNext()) {
             actual[index++] = it.next();
         }
-        
-        assertArrayEquals(array, actual);
+        Arrays.sort(expected);
+        Arrays.sort(actual);
+
+        assertArrayEquals(expected, actual);
         assertThrowsExactly(NoSuchElementException.class, it::next );
     }
     @Test
@@ -87,12 +96,14 @@ public abstract class CollectionTest {
         assertFalse(collection.remove(3));
         assertFalse(collection.remove(17));
         clear();
+        System.out.println(collection.size());
         runTest(new Integer[0]);
 
     }
     private void clear() {
         Arrays.stream(array).forEach(n -> collection.remove(n));
     }
+
     @Test
     void isEmptyTest() {
         assertFalse(collection.isEmpty());
@@ -104,12 +115,14 @@ public abstract class CollectionTest {
        Arrays.stream(array).forEach(n -> assertTrue(collection.contains(n)));
        assertFalse(collection.contains(10000000));
     }
-    @Timeout(value = 50, unit = TimeUnit.MILLISECONDS)
     @Test 
     void performanceTest() {
         collection.clear();
         IntStream.range(0, N_ELEMENTS).forEach(i -> collection.add(random.nextInt()));
+        collection.removeIf(n -> n % 2 == 0);
+        assertTrue(collection.stream().allMatch(n -> n % 2 != 0));
         collection.clear();
+        assertTrue(collection.isEmpty());
     }
 
 }

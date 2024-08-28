@@ -38,9 +38,9 @@ public class LinkedList<T> implements List<T> {
                 throw new IllegalStateException();
             }
             if(!hasNext()) {
-                LinkedList.this.remove(tail.obj);
+                LinkedList.this.removeNode(tail);
             }
-            else {LinkedList.this.remove(current.prev.obj);
+            else {LinkedList.this.removeNode(current.prev);
             flNext = false;
             }
         }
