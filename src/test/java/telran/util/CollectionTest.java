@@ -98,7 +98,7 @@ public abstract class CollectionTest {
     private void clear() {
         Arrays.stream(array).forEach(n -> collection.remove(n));
     }
-//     @Test
+    @Test
     void isEmptyTest() {
         assertFalse(collection.isEmpty());
         clear();
