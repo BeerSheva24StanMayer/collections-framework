@@ -73,8 +73,20 @@ public class TreeSet<T> implements Set<T> {
             if (!flNext) {
                 throw new IllegalStateException();
             }
+            T temp = prevNode.obj;
+            // if (prevNode.right != null || prevNode.left != null) {
+            // // if (prevNode.right != null || prevNode.left != null) {
+            // currentNode = prevNode;
+            // TreeSet.this.remove(prevNode.obj);
+            // } else {
+            // TreeSet.this.remove(prevNode.obj);
+            // }
             TreeSet.this.remove(prevNode.obj);
-            prevNode = null;
+            if (!Objects.equals(temp, prevNode.obj)) {
+                currentNode = prevNode;
+            } else {
+                prevNode = null;
+            }
             flNext = false;
         }
     }
@@ -139,9 +151,10 @@ public class TreeSet<T> implements Set<T> {
     }
 
     private void removeLastElement(Node<T> lastNode) {
-        if (Objects.equals(lastNode, root)) {
-            root = lastNode = null;
-        } else {
+        if (!Objects.equals(lastNode, root)) {
+            if (lastNode.parent.right == null) {
+                System.out.println(lastNode.obj);
+            }
             if (Objects.equals(lastNode, lastNode.parent.right)) {
                 lastNode.parent.right = null;
             } else if (Objects.equals(lastNode, lastNode.parent.left)) {
@@ -149,60 +162,56 @@ public class TreeSet<T> implements Set<T> {
             }
             lastNode.parent = null;
             lastNode = null;
+        } else {
+            root = lastNode = null;
         }
 
     }
 
     private void removeJuncElement(Node<T> juncNode) {
         Node<T> substNode = getSubstNode(juncNode);
-        removingWithConditions(juncNode, substNode);
-        removingParenting(juncNode, substNode);
-        parentingIfRoot(juncNode, substNode);
+        if (substNode.left == null && substNode.right == null) {
+            juncNode.obj = substNode.obj;
+            removeLastElement(substNode);
+        } else {
+            if (juncNode.parent != null) {
+                makeNetworkingNonRoot(juncNode, substNode);
+            } else {
+                makeNetworkingRoot(juncNode, substNode);
+            }
+        }
+        substNode = null;
     }
 
-    private void parentingIfRoot(Node<T> junc, Node<T> subst) {
-        if (junc.parent != null) {
-            if (Objects.equals(junc, junc.parent.left)) {
-                junc.parent.left = subst;
-            } else {
-                junc.parent.right = subst;
-            }
+    private void makeNetworkingNonRoot(Node<T> junc, Node<T> subst) {
+        if (Objects.equals(subst, junc.right)) {
             subst.parent = junc.parent;
+            subst.parent.right = subst;
+        } else if (Objects.equals(subst, junc.left)) {
+            junc.obj = subst.obj;
+            junc.left = subst.left;
+            subst.left.parent = junc;
         } else {
+            subst.left.parent = subst.parent;
+            subst.parent.right = subst.left;
+            subst.left.parent = junc;
+        }
+    }
+
+    private void makeNetworkingRoot(Node<T> junc, Node<T> subst) {
+        if (Objects.equals(subst, junc.left)) {
+            junc.obj = subst.obj;
+            junc.left = subst.left;
+            subst.left.parent = junc;
+        } else if (!Objects.equals(subst.parent, junc)) {
+            subst.left.parent = subst.parent;
+            subst.parent.right = subst.left;
+            subst.left.parent = junc;
+        }
+        if (Objects.equals(subst, junc.right)) {
+            junc = subst;
             subst.parent = null;
             root = subst;
-        }
-    }
-
-    private void removingWithConditions(Node<T> junc, Node<T> subst) {
-        if (subst.left != null && junc.left != null) {
-            if (Objects.equals(subst.parent, junc)) {
-                subst.right = junc.right;
-            } else {
-                subst.left.parent = subst.parent;
-                subst.parent.right = subst.left;
-                subst.left = junc.left;
-                subst.right = junc.right;
-            }
-        } else if (subst.left == null && subst.right == null) {
-            if (Objects.equals(subst, subst.parent.left)) {
-                subst.parent.left = null;
-            } else if (Objects.equals(subst, subst.parent.right)) {
-                subst.parent.right = null;
-            }
-            subst.left = junc.left;
-            subst.right = junc.right;
-        }
-    }
-
-    private void removingParenting(Node<T> junc, Node<T> subst) {
-        if (junc.left != null && junc.right == null) {
-            junc.left.parent = subst;
-        } else if (junc.left == null && junc.right != null) {
-            junc.right.parent = subst;
-        } else if (junc.left != null && junc.right != null) {
-            junc.left.parent = subst;
-            junc.right.parent = subst;
         }
     }
 
