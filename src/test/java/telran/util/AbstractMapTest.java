@@ -9,8 +9,6 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import telran.util.Map.Entry;
-
 public abstract class AbstractMapTest {
     Map<Integer, Integer> map;
     Integer[] array = {3, -10, 20, 1, 10, 8, 100 , 17};
