@@ -3,24 +3,20 @@ package telran.util;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.BeforeEach;
 
-public class TreeSetTest extends SortedSetTest{
-    @BeforeEach
+public class LinkedHashSetTest extends SetTest{
+  @BeforeEach
     @Override
     void setUp() {
-        collection = new TreeSet<>();
+        collection = new LinkedHashSet<>();
         super.setUp();
     }
     @Override
     protected void runTest(Integer[] expected) {
-        Integer[] expectedSorted = Arrays.copyOf(expected, expected.length);
-        Arrays.sort(expectedSorted);
         Integer[] actual = collection.stream().toArray(Integer[]::new);
-        Arrays.sort(actual);
-        assertArrayEquals(expectedSorted, actual);
+        assertArrayEquals(expected, actual);
         assertEquals(expected.length, collection.size());
     }
 }
+

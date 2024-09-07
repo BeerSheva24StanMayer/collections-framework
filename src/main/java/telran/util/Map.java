@@ -41,13 +41,14 @@ public interface Map<K, V> {
         }
         return res;
     }
-    
+    V put(K key, V value);
     default V putIfAbsent(K key, V value) {
         V res = get(key);
-        if (res == null) res = put(key, value);
+        if (res == null) {
+            put(key, value);
+        }
         return res;
     }
-    V put(K key, V value);
     boolean containsKey(Object key);
     boolean containsValue(Object value);
     Set<K> keySet();
@@ -55,5 +56,6 @@ public interface Map<K, V> {
     Collection<V> values();
     int size();
     boolean isEmpty();
+    V remove(K key);
 
 }
