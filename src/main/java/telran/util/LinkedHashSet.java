@@ -78,9 +78,6 @@ private class LinkedListIterator implements Iterator<T> {
 
     @Override
     public boolean contains(T pattern) {
-        System.out.print(map.containsKey(pattern));
-        System.out.printf(" " + pattern);
-        System.out.println();
         return map != null && map.containsKey(pattern);
     }
 
