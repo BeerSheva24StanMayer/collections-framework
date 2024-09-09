@@ -12,7 +12,6 @@ public class LinkedHashSet<T> implements Set<T> {
 private class LinkedListIterator implements Iterator<T> {
     private Iterator<T> iterator = list.iterator();
     private T current = null;
-    private boolean isNextFlag = false;
 
     @Override
     public boolean hasNext() {
@@ -26,19 +25,14 @@ private class LinkedListIterator implements Iterator<T> {
         }
         
         current = iterator.next();
-        isNextFlag = true;
         return current;
 
     }
 
     @Override
     public void remove() {
-        if (!isNextFlag) {
-            throw new IllegalStateException();
-        }
         iterator.remove();
         map.remove(current);
-        isNextFlag = false;
     }
 }
 
@@ -58,9 +52,10 @@ private class LinkedListIterator implements Iterator<T> {
     @Override
     public boolean remove(T pattern) {
         boolean res = false;
+        Node<T> node = map.get(pattern);
         if (contains(pattern)) {
             map.remove(pattern);
-            list.remove(pattern);
+            list.removeNode(node);;
             res = true;
         }
         return res;

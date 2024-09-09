@@ -43,9 +43,8 @@ public class SortedSetTest extends SetTest {
 
     @Test
     void subSetTest() {
-        // Integer[] expected = { 10, 17 };
-        Integer[] expected = {8, 10, 17, 20  };
-        Integer[] actual = sortedSet.subset(6, 99).stream().toArray(Integer[]::new);
+        Integer[] expected = {1, 3, 8, 10, 17, 20};
+        Integer[] actual = sortedSet.subset(1, 99).stream().toArray(Integer[]::new);
         assertArrayEquals(expected, actual);
     }
 

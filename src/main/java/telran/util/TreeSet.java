@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import org.openqa.selenium.ScriptTimeoutException;
+
 @SuppressWarnings("unchecked")
 public class TreeSet<T> implements SortedSet<T> {
     private static class Node<T> {
@@ -256,19 +258,12 @@ public class TreeSet<T> implements SortedSet<T> {
     @Override
     public SortedSet<T> subset(T keyFrom, T keyTo) {
         TreeSet<T> subSetSorted = new TreeSet<>(comparator);
-        Node<T> current = findCeilingFloor(keyTo, 1);
-        Node<T> top = current;
-        if (current != null && current.left != null) {
-            current = getLeastFrom(current);
-            while (current != null && comparator.compare(keyTo, current.obj) > 0) {
-                if (comparator.compare(keyFrom, current.obj) <= 0) {
-                    subSetSorted.add(current.obj);
-                }
-                current = getNextCurrent(current);
+        Node<T> current = findCeilingFloor(keyFrom, 0);
+        while (current != null && comparator.compare(keyTo, current.obj) > 0) {
+            if (comparator.compare(keyFrom, current.obj) <= 0) {
+                subSetSorted.add(current.obj);
             }
-            if (!Objects.equals(top.obj, keyTo)) {
-                subSetSorted.add(top.obj);
-            }
+            current = getNextCurrent(current);
         }
         return subSetSorted;
     }
@@ -276,7 +271,7 @@ public class TreeSet<T> implements SortedSet<T> {
     private Node<T> findCeilingFloor(T pattern, int key) {
         Node<T> ceiling = null;
         Node<T> floor = null;
-        Node<T> node = getParent(pattern);
+        Node<T> node = getParentOrNode(pattern);
         if (node != null) {
             int compRes = comparator.compare(pattern, node.obj);
             if (compRes > 0) {
@@ -285,9 +280,9 @@ public class TreeSet<T> implements SortedSet<T> {
             } else if (compRes < 0) {
                 floor = getLess(node);
                 ceiling = node;
+            } else {
+                floor = ceiling = node;
             }
-        } else {
-            ceiling = floor = getNode(pattern);
         }
         return key == 0 ? ceiling : floor;
     }
