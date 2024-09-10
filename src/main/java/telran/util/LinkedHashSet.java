@@ -20,10 +20,6 @@ private class LinkedListIterator implements Iterator<T> {
 
     @Override
     public T next() {
-        if (!hasNext()) {
-            throw new NoSuchElementException();
-        }
-        
         current = iterator.next();
         return current;
 
@@ -73,7 +69,7 @@ private class LinkedListIterator implements Iterator<T> {
 
     @Override
     public boolean contains(T pattern) {
-        return map != null && map.containsKey(pattern);
+        return map.containsKey(pattern);
     }
 
     @Override
