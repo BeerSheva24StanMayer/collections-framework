@@ -54,6 +54,8 @@ public class TreeSet<T> implements SortedSet<T> {
     private Node<T> root;
     private Comparator<T> comparator;
     int size;
+    private String printingSymbol = " ";
+    private int symbolsPerLevel = 3;
 
     public TreeSet(Comparator<T> comparator) {
         this.comparator = comparator;
@@ -61,6 +63,14 @@ public class TreeSet<T> implements SortedSet<T> {
 
     public TreeSet() {
         this((Comparator<T>) Comparator.naturalOrder());
+    }
+
+    public void setPrintingSymbol(String printingSymbol) {
+        this.printingSymbol = printingSymbol;
+    }
+
+    public void setSymbolsPerLevel(int symbolsPerLevel) {
+        this.symbolsPerLevel = symbolsPerLevel;
     }
 
     @Override
@@ -295,4 +305,81 @@ public class TreeSet<T> implements SortedSet<T> {
         return Objects.equals(node, temp) ? null : temp;
     }
 
+    public void displayTreeRotated() {
+        displayTreeRotated(root, 0);
+    }
+
+    public void displayTreeParentChild() {
+        displayTreeParentChildren(root, 0);
+    }
+
+    public void displayTreeParentChildren(Node<T> root, int level) {
+        if (root != null) {
+            displayRootObject(root.obj, level);
+            displayTreeParentChildren(root.left, level + 1);
+            displayTreeParentChildren(root.right, level + 1);
+        }
+    }
+
+    public int width() {
+
+        return width(root);
+    }
+
+    private int width(Node<T> root) {
+        int res = 0;
+        if (root != null) {
+            if (root.left == null && root.right == null) {
+                res = 1;
+            } else {
+                res = width(root.left) + width(root.right);
+            }
+        }
+        return res;
+    }
+
+    public int height() {
+        return height(root);
+    }
+
+    private int height(Node<T> root) {
+        int res = 0;
+        if(root != null) {
+            int heightLeft = height(root.left);
+            int heightRight = height(root.right);
+            res = 1 + Math.max(heightLeft, heightRight);
+        }
+        return res;
+    }
+
+    public void inversion() {
+        // TODO
+        // reversing the nodes' placement with the same root and with
+        // the same nodes
+        // only left/right references should be swaped
+            toInvert(root);
+            comparator = comparator.reversed();
+    }
+
+    private void toInvert(Node<T> root) {
+        if(root != null) {
+        Node<T> temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+        toInvert(root.left);
+        toInvert(root.right);
+        }
+    }
+
+    private void displayTreeRotated(Node<T> root, int level) {
+        if (root != null) {
+            displayTreeRotated(root.right, level + 1);
+            displayRootObject(root.obj, level);
+            displayTreeRotated(root.left, level + 1);
+        }
+    }
+
+    private void displayRootObject(T obj, int level) {
+        System.out.printf("%s%s\n", printingSymbol.repeat(level * symbolsPerLevel), obj);
+    }
 }
