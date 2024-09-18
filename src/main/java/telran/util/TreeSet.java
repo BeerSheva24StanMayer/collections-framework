@@ -321,42 +321,7 @@ public class TreeSet<T> implements SortedSet<T> {
         }
     }
 
-    public int width() {
-
-        return width(root);
-    }
-
-    private int width(Node<T> root) {
-        int res = 0;
-        if (root != null) {
-            if (root.left == null && root.right == null) {
-                res = 1;
-            } else {
-                res = width(root.left) + width(root.right);
-            }
-        }
-        return res;
-    }
-
-    public int height() {
-        return height(root);
-    }
-
-    private int height(Node<T> root) {
-        int res = 0;
-        if(root != null) {
-            int heightLeft = height(root.left);
-            int heightRight = height(root.right);
-            res = 1 + Math.max(heightLeft, heightRight);
-        }
-        return res;
-    }
-
     public void inversion() {
-        // TODO
-        // reversing the nodes' placement with the same root and with
-        // the same nodes
-        // only left/right references should be swaped
             toInvert(root);
             comparator = comparator.reversed();
     }
@@ -371,6 +336,32 @@ public class TreeSet<T> implements SortedSet<T> {
         }
     }
 
+    public int width() {
+        return width(root);
+    }
+
+    private int width(Node<T> root) {
+        int res = 0;
+        if (root != null) {
+            res = root.left == null && root.right == null ? 1 : width(root.left) + width(root.right);
+        }
+        return res;
+    }
+
+    public int height() {
+       return height(root);
+    }
+
+    private int height(Node<T> root) {
+        int res = 0;
+        if (root != null) {
+            int heightLeft = height(root.left);
+            int heightRight = height(root.right);
+            res = 1 + Math.max(heightLeft, heightRight);
+        }
+        return res;
+    }
+
     private void displayTreeRotated(Node<T> root, int level) {
         if (root != null) {
             displayTreeRotated(root.right, level + 1);
@@ -381,5 +372,31 @@ public class TreeSet<T> implements SortedSet<T> {
 
     private void displayRootObject(T obj, int level) {
         System.out.printf("%s%s\n", printingSymbol.repeat(level * symbolsPerLevel), obj);
+    }
+    public void balance() {
+        Node<T> [] nodes = getSortedNodesArray();
+        root = balanceArray(nodes, 0, nodes.length - 1, null);
+    }
+
+    private Node<T> balanceArray(Node<T>[] array, int left, int right, Node<T> parent) {
+        Node<T> root = null;
+       if(left <= right) {
+            int middle = (left + right) / 2;
+            root = array[middle];
+            root.parent = parent;
+            root.left = balanceArray(array, left, middle - 1, root);
+            root.right = balanceArray(array, middle + 1, right, root);
+       }
+       return root;
+    }
+
+    private Node<T>[] getSortedNodesArray() {
+       Node<T>[] array = new Node[size];
+        Node<T> current = getLeastFrom(root);
+        for(int i = 0; i < size; i++) {
+            array[i] = current;
+            current = getNextCurrent(current);
+        }
+        return array;
     }
 }

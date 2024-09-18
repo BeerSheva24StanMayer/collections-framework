@@ -1,9 +1,14 @@
 package telran.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
-
 //{3, -10, 20, 1, 10, 8, 100 , 17}
 public class SortedSetTest extends SetTest {
     SortedSet<Integer> sortedSet;
@@ -41,11 +46,40 @@ public class SortedSetTest extends SetTest {
         assertEquals(100, sortedSet.last());
     }
 
-    @Test
-    void subSetTest() {
-        Integer[] expected = {1, 3, 8, 10, 17, 20};
-        Integer[] actual = sortedSet.subset(1, 99).stream().toArray(Integer[]::new);
-        assertArrayEquals(expected, actual);
+    @Override
+    protected void fillBigCollection(){
+        Integer[] array = getBigArrayCW();
+        Arrays.stream(array).forEach(collection::add);
     }
 
+    protected Integer[] getBigArrayCW() {
+       return new Random().ints().distinct().limit(N_ELEMENTS).boxed().toArray(Integer[]::new);
+
+    }
+    protected Integer[] getBigArrayHW() {
+        Integer[] array = IntStream.rangeClosed(1, N_ELEMENTS).boxed().toArray(Integer[]::new);
+        Integer[] balancedArray = new Integer[array.length];
+        BalancingArrray(array, balancedArray, 0, array.length - 1, 0);
+        return balancedArray;
+     }
+
+     private int  BalancingArrray(Integer[] sortedArray, Integer[] balancedArray, int left, int right, int index) {
+        if (left <= right) {
+            int middle = (left + right) / 2;
+            balancedArray[index++] = sortedArray[middle];
+            index =  BalancingArrray(sortedArray, balancedArray, left, middle - 1, index);
+            index =  BalancingArrray(sortedArray, balancedArray, middle + 1, right, index);
+        }
+        return index;
+    }
+
+    @Override
+    protected void runTest(Integer[] expected) {
+        Integer[] expectedSorted = Arrays.copyOf(expected, expected.length);
+        Arrays.sort(expectedSorted);
+        Integer[] actual = collection.stream().toArray(Integer[]::new);
+        
+        assertArrayEquals(expectedSorted, actual);
+        assertEquals(expected.length, collection.size());
+    }
 }
