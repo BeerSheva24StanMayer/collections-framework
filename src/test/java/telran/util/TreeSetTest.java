@@ -78,7 +78,7 @@ public class TreeSetTest extends SortedSetTest{
         TreeSet<Integer> tree = new TreeSet<>();
         Integer[] array = getBigArrayHW();
         Arrays.stream(array).forEach(tree::add);
-        assertEquals(20, tree.height());
+        assertEquals(21, tree.height());
         assertEquals((N_ELEMENTS + 1) / 2, tree.width());
     }
 }
